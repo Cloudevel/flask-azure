@@ -1,17 +1,21 @@
 
 # coding: utf-8
 
-# In[ ]:
-
-
+from data import ruta, orden, campos, carreras
 from flask import Flask, jsonify, request, abort
-from data import ruta, campos, orden
 from json import loads
+import sys
 
+
+# ## Definición de funciones.
+
+# ### Funciones de gestión de la base de datos.
+# 
+# En este caso la base de datos no es otra cosa más que un archivo de texto que representa a un objeto de tipo *list* de Python. 
+# 
+# La base de datos puede ser consultada en [data/alumnos.txt](data/alumnos.txt). 
 
 # ### Función de carga de datos.
-
-# In[ ]:
 
 
 def carga_base(ruta):
@@ -21,7 +25,6 @@ def carga_base(ruta):
 
 # ### Función de escritura de datos.
 
-# In[ ]:
 
 
 def escribe_base(lista ,ruta):
@@ -33,8 +36,6 @@ def escribe_base(lista ,ruta):
 # * Busca dentro del campo *'Cuenta'* de cada elemento de *base* al número entero correspondiente al argumento de *cuenta*.
 # * En caso de encontrar una coincidencia, regresa al elemento.
 # * En caso de no encontrar coincidencia regresa *False*.
-
-# In[ ]:
 
 
 def busca_base(cuenta, base):
@@ -51,10 +52,9 @@ def busca_base(cuenta, base):
 
 # ### Función que valida el tipo de dato.
 
-# In[ ]:
-
 
 def es_tipo(dato, tipo):
+    tipo = eval(tipo)
     if tipo == str:
         return True
     else:
@@ -67,14 +67,11 @@ def es_tipo(dato, tipo):
 # ### Función que valida las reglas de los datos.
 # * Los campos *'Nombre"* y *'Primer Apellido'* no deben de ser una cadena de caracteres vacía.
 # * El campo 'Semestre' debe de ser un entero mayor a 1.
-# * La cadena de caracteres del campo 'Carrera' debe de estar dentro de las cadenas listadas en *carrera*.
+# * La cadena de caracteres del campo 'Carrera' debe de estar dentro de las cadenas listadas en *datos.carrera*.
 # * El campo promedio debe de ser un número entre 0 y 10.
-
-# In[ ]:
 
 
 def reglas(dato, campo):
-    from data import carreras
     if campo == "Carrera" and dato not in carreras:
         return False
     elif campo == "Semestre" and dato < 1:
@@ -89,8 +86,6 @@ def reglas(dato, campo):
 
 # ### Función de validación de tipos y reglas.
 
-# In[ ]:
-
 
 def valida(dato, campo):
     return es_tipo(dato, campos[campo][0]) and reglas(dato, campo)
@@ -98,25 +93,24 @@ def valida(dato, campo):
 
 # ### Función que valida que el mensaje contiene todos los campos obligatorios.
 
-# In[ ]:
-
 
 def recurso_completo(base, ruta, cuenta, peticion):
     try:
         candidato = {'Cuenta': int(cuenta)}
-        peticion = loads(peticion)
-        if (set(peticion)).issubset(set(orden)):                    
+        registro = loads(peticion.decode(encoding="utf-8"))
+        if (set(registro)).issubset(set(orden)):
             for campo in orden:
-                if not campos[campo][1] and campo not in peticion:
+                if not campos[campo][1] and campo not in registro:
                     candidato[campo] = ''
-                elif valida(peticion[campo], campo):
-                    candidato[campo] = peticion[campo]      
+                elif valida(registro[campo], campo):
+                    candidato[campo] = registro[campo]      
                 else:
-                    abort(400)
+                    abort(401)
         else:
-            abort(400)
+            abort(402)
     except:
-        abort(400)
+        abort(403)
+            
     base.append(candidato)
     escribe_base(base, ruta)
     return jsonify(candidato)
@@ -132,19 +126,17 @@ def recurso_completo(base, ruta, cuenta, peticion):
 #     * **PATCH**: para modificar ciertos datos de un registro existente.
 #     * **DELETE**: para eliminar un registro existente.
 
-# In[ ]:
-
 
 app = Flask(__name__)
 
 
 @app.route('/')
-def raiz():
-    return 'Hola, Mundo.'
-
+def index():
+    print(campos)
+    return str(campos)
 
 @app.route('/api/', methods=['GET'])
-def index():
+def api_raiz():
     with open(ruta, 'tr') as base:    
         return jsonify(eval(base.read()))
 
@@ -195,21 +187,22 @@ def api(cuenta):
         else:
             indice = base.index(alumno)
             try:
-                peticion = loads(request.data)
+                peticion = loads(request.data.decode(encoding="utf-8"))
                 if (set(peticion)).issubset(set(orden)):
                     for campo in peticion:
                         dato = peticion[campo]
                         if valida(dato, campo):
                             alumno[campo] = dato
                         else:
-                            abort(400)
+                            abort(401)
                 else:
-                    abort(400)
+                    abort(402)
             except:
-                abort(400)
+                abort(403)
             base[indice] = alumno
             escribe_base(base, ruta)
             return jsonify(alumno)
 
+
 if __name__ == '__main__':
-    app.run()
+    app.run('0.0.0.0')
