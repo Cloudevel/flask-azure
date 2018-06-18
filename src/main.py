@@ -113,7 +113,6 @@ def recurso_completo(base, ruta, cuenta, peticion):
     return jsonify(candidato)
 
 
-# ## Código del servidor.
 # 
 # * El servidor correrá en [localhost:5000/api/](localhost:5000/api/). Si se accede a la raíz, se desplegará un listado de todos los alumnos en formato JSON.
 # * El servidor soporta los métodos:
@@ -127,28 +126,29 @@ def recurso_completo(base, ruta, cuenta, peticion):
 app = Flask(__name__)
 
 
+# Función de vista raíz.
 @app.route('/')
 def index():
-    print(campos)
-    return str(campos)
+    return '<h1>Hola, mundo.</h1>
 
+
+# Función de vista de la raíz de la API.
 @app.route('/api/', methods=['GET'])
 def api_raiz():
     with open(ruta, 'tr') as base:    
         return jsonify(eval(base.read()))
 
     
+# Funciónde vista de la API al ingresar un numero de cuenta en la URL.    
 @app.route('/api/<cuenta>', methods=['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
 def api(cuenta):
-    
     if request.method == 'GET':
         base = carga_base(ruta)
         alumno = busca_base(cuenta, base)
         if alumno:
             return jsonify(alumno)
         else:
-            abort(404)
-            
+            abort(404)            
     if request.method == 'DELETE':               
         base = carga_base(ruta)
         alumno = busca_base(cuenta, base)
@@ -157,16 +157,14 @@ def api(cuenta):
             escribe_base(base, ruta)
             return jsonify(alumno)
         else:
-            abort(404)
-        
+            abort(404)        
     if request.method == 'POST':
         base = carga_base(ruta)
         alumno = busca_base(cuenta, base)
         if alumno:
             abort(409)
         else:
-            return recurso_completo(base, ruta, cuenta, request.data)
-            
+            return recurso_completo(base, ruta, cuenta, request.data)          
     if request.method == 'PUT':
         base = carga_base(ruta)
         alumno = busca_base(cuenta, base)
@@ -175,7 +173,6 @@ def api(cuenta):
         else:
             base.remove(alumno)
             return recurso_completo(base, ruta, cuenta, request.data)
-
     if request.method == 'PATCH':               
         base = carga_base(ruta)
         alumno = busca_base(cuenta, base)
@@ -199,7 +196,5 @@ def api(cuenta):
             base[indice] = alumno
             escribe_base(base, ruta)
             return jsonify(alumno)
-
-
 if __name__ == '__main__':
     app.run()
