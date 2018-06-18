@@ -4,7 +4,6 @@
 from data import ruta, orden, campos, carreras
 from flask import Flask, jsonify, request, abort
 from json import loads
-import sys
 
 
 # ## Definición de funciones.
@@ -54,7 +53,6 @@ def busca_base(cuenta, base):
 
 
 def es_tipo(dato, tipo):
-    tipo = eval(tipo)
     if tipo == str:
         return True
     else:
@@ -105,12 +103,11 @@ def recurso_completo(base, ruta, cuenta, peticion):
                 elif valida(registro[campo], campo):
                     candidato[campo] = registro[campo]      
                 else:
-                    abort(401)
+                    abort(401)     
         else:
             abort(402)
     except:
         abort(403)
-            
     base.append(candidato)
     escribe_base(base, ruta)
     return jsonify(candidato)
@@ -205,4 +202,4 @@ def api(cuenta):
 
 
 if __name__ == '__main__':
-    app.run('0.0.0.0')
+    app.run()
