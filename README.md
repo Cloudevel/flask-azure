@@ -1,6 +1,6 @@
 # flask-azure
 
-Notebooks de [Jupyter](https://jupyter.org) que incluyen los apuntes del webinar sobre la creación de una creando de una web app de Azure para desplegar un servicio API REST. 
+Notebooks de [Jupyter](https://jupyter.org) que incluyen los apuntes del webinar sobre la creación de una web app de Azure para desplegar un servicio API REST. 
 
 Las notebooks de Jupyter se deben de ejecutar utilizando el [kernel de Bash](https://github.com/takluyver/bash_kernel).
 
