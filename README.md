@@ -2,7 +2,7 @@
 
 Notebooks de [Jupyter](https://jupyter.org) que incluyen los apuntes del webinar sobre la creación de una web app de Azure para desplegar un servicio API REST. 
 
-Las notebooks de Jupyter se deben de ejecutar utilizando el [kernel de Bash](https://github.com/takluyver/bash_kernel).
+Una de las notebooks se debe de ejecutar utilizando el [kernel de Bash](https://github.com/takluyver/bash_kernel).
 
 ## Nuestra máquina virtual.
 
@@ -15,3 +15,9 @@ Para clonar el repositorio en su sistema de archivos local, ejecute desde una te
 ``` bash
 git clone https://github.com/Cloudevel/flask-azure.git
 ```
+
+## Contenido:
+
+* La notebook [01_azure_web_app.ipynb](01_azure_web_app.ipynb) corriendo el kernel de Bash, la cual incluye los apuntes con el procedimiento paso a paso para crear una apicación web con Azure. El último paso para publicar la aplicación se debe de hacer desde una terminal, tal como se inidca en los apuntes.
+
+* La notebook [02_cliente_api_rest.ipynb](02_cliente_api_rest.ipynb) corriendo un kernel de Python contiene código capaz de consumir la API publicada.
