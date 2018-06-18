@@ -129,7 +129,7 @@ app = Flask(__name__)
 # Función de vista raíz.
 @app.route('/')
 def index():
-    return '<h1>Hola, mundo.</h1>
+    return '<h1>Hola, mundo.</h1>'
 
 
 # Función de vista de la raíz de la API.
